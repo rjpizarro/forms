@@ -1,6 +1,6 @@
 {
   "name": "@yuniku/forms",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "High Order Components to enhance forms.",
   "main": "dist/index.js",
   "scripts": {
