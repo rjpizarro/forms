@@ -45,17 +45,19 @@ export default (editRoute, viewRoute, options = {}) => compose(
                 _navigationUnavailable;
 
             return {
-                renderClearButton: () => (
-                    <Tooltip title="Clear">
-                        <IconButton onClick={() => {
-                            props.reset();
+                renderClearButton: () => {
+                    return (id && props.mode === VIEW) ? (
+                        <Tooltip title="Clear">
+                            <IconButton onClick={() => {
+                                props.reset();
 
-                            if (options.onClearCallback) options.onClearCallback(props)
-                        }}>
-                            <ClearIcon style={{width: 24, height: 24}} />
-                        </IconButton>
-                    </Tooltip>
-                ),
+                                if (options.onClearCallback) options.onClearCallback(props)
+                            }}>
+                                <ClearIcon style={{width: 24, height: 24}} />
+                            </IconButton>
+                        </Tooltip>
+                    ) : null;
+                },
                 renderEditButton: () => {
                     return (id && props.mode === VIEW && showEdit) ? (
                         <Tooltip title="Edit">
