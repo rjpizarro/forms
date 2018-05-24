@@ -17,8 +17,8 @@ const _pushHistory = (history, route, params) => {
 
 /**
  *
- * @param {string} editRoute
- * @param {string} viewRoute
+ * @param {string | function} editRoute
+ * @param {string | function} viewRoute
  * @param {object} options
  * @param {function} options.onClearCallback
  * @param {function} options.shouldShowEdit
@@ -28,17 +28,20 @@ const _pushHistory = (history, route, params) => {
  */
 export default (editRoute, viewRoute, options = {}) => compose(
     withProps(props => {
+        const editPathRoute = (typeof editRoute === 'function') ? editRoute(props) : editRoute;
+        const viewPathRoute = (typeof viewRoute === 'function') ? viewRoute(props) : viewRoute;
+
         const _navigationUnavailable = () => console.warn('history is not accessible via prop. Navigation actions will not be available. Please provide a callback for edit and view buttons instead.');
         const id = props.initialValues && props.initialValues.id || props.initialValues._id;
         const showEdit = (options.shouldShowEdit) ? options.shouldShowEdit(props) : true;
         const showView = (options.shouldShowView) ? options.shouldShowView(props) : true;
         const onEdit = (options.onEditCallback) ?
-            options.onEditCallback(editRoute, props) : (props.history) ?
-                () => _pushHistory(props.history, editRoute, id) :
+            options.onEditCallback(editPathRoute, props) : (props.history) ?
+                () => _pushHistory(props.history, editPathRoute, id) :
                 _navigationUnavailable;
         const onView = (options.onViewCallback) ?
-            options.onViewCallback(viewRoute, props) : (props.history) ?
-                () => _pushHistory(props.history, viewRoute, id) :
+            options.onViewCallback(viewPathRoute, props) : (props.history) ?
+                () => _pushHistory(props.history, viewPathRoute, id) :
                 _navigationUnavailable;
 
             return {

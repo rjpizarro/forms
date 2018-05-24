@@ -70,8 +70,8 @@ export default compose(
             customGetFieldProps: (fieldName, fieldProps, props) => {},
         },
         actionsButtonsOptions: {
-            editRoute: 'String',
-            viewRoute: 'String',
+            editRoute: 'String' | (props) => {},
+            viewRoute: 'String' | (props) => {},
             options: {
                 onClearCallback: (props) => {},
                 shouldShowEdit: (props) => {},
@@ -339,8 +339,8 @@ return {
 Genera botones de acción dentro del form: clear, edit mode, view mode. 
 ```javascript
 withActionsButtons(
-  editRoute: String,
-  viewRoute: String,
+  editRoute: String | (ownerProps: Object) => {},
+  viewRoute: String | (ownerProps: Object) => {},
   options: Object {
       onClearCallback: (ownerProps: Object) => {},
       shouldShowEdit: (ownerProps: Object) => Boolean,
