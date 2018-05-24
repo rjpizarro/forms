@@ -46,7 +46,7 @@ export default (editRoute, viewRoute, options = {}) => compose(
 
             return {
                 renderClearButton: () => {
-                    return (id && props.mode === VIEW) ? (
+                    return (props.mode !== VIEW) ? (
                         <Tooltip title="Clear">
                             <IconButton onClick={() => {
                                 props.reset();
