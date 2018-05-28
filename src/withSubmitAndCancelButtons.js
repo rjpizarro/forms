@@ -83,7 +83,7 @@ export default (onSubmitCallback, onSubmitOptions = {}, onCancelOptions = {}) =>
         //handle onCancelOptions
         const cancelLabel = onCancelOptions.label || 'Cancel';
         const onCancel = onCancelOptions.onCancel || Navigator.pop;
-        const cancelButtonProps = (onCancelOptions.getButtonProps) ? onCancelOptions.getButtonProps(props) : onSubmitOptions.buttonProps;
+        const cancelButtonProps = (onCancelOptions.getButtonProps) ? onCancelOptions.getButtonProps(props) : onCancelOptions.buttonProps;
 
         return {
             renderSubmitButton: (style = {}) => {
