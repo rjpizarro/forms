@@ -5,6 +5,8 @@ import _capitalize from 'lodash/capitalize';
 import Navigator from '@yuniku/navigator';
 import BackIcon from '@material-ui/icons/ArrowBack';
 import IconButton from 'material-ui/IconButton';
+import JssProvider from 'react-jss/lib/JssProvider';
+import generateClassName from './helpers/generateClassName';
 
 const _getFormTitle = (title = '', mode) => `${_capitalize(mode)} ${title}`;
 
@@ -16,12 +18,14 @@ export default (title, customFormTitle) => compose(
             return {
                 formTitle: formTitle,
                 renderFormTitleWithBackButton: () => (
-                    <span>
-                        <IconButton onClick={Navigator.pop}>
-                            <BackIcon style={{width: 24, height: 24}} />
-                        </IconButton>
-                        {formTitle}
-                    </span>
+                    <JssProvider generateClassName={generateClassName} >
+                        <span>
+                            <IconButton onClick={Navigator.pop}>
+                                <BackIcon style={{width: 24, height: 24}} />
+                            </IconButton>
+                            {formTitle}
+                        </span>
+                    </JssProvider>
                 ),
             }
         }

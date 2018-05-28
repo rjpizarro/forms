@@ -12,6 +12,8 @@ import Dialog, {
     DialogTitle,
 } from 'material-ui/Dialog';
 import omitProps from './helpers/omitProps';
+import JssProvider from 'react-jss/lib/JssProvider';
+import generateClassName from './helpers/generateClassName';
 
 const labelByMode = {
     [ADD]: 'Create',
@@ -90,39 +92,43 @@ export default (onSubmitCallback, onSubmitOptions = {}, onCancelOptions = {}) =>
                 }
 
                 return (
-                    <span>
-                        <Button
-                            onClick={ (confirmAction) ? props.openDialog : props.handleSubmit(data => onSubmit(data, props))}
-                            variant="raised"
-                            color="primary"
-                            disabled={props.pristine || props.submitting}
-                            style={style}
-                            {...submitButtonProps}
-                        >
-                            {submitLabel}
-                        </Button>
-                        {(confirmAction) ?
-                            <ConfirmDialog
-                                onSubmit={props.handleSubmit(data => onSubmit(data, props))}
-                                open={props.dialogIsOpen}
-                                closeDialog={props.closeDialog}
-                            /> :
-                            null
-                        }
-                    </span>
+                    <JssProvider generateClassName={generateClassName} >
+                        <span>
+                            <Button
+                                onClick={ (confirmAction) ? props.openDialog : props.handleSubmit(data => onSubmit(data, props))}
+                                variant="raised"
+                                color="primary"
+                                disabled={props.pristine || props.submitting}
+                                style={style}
+                                {...submitButtonProps}
+                            >
+                                {submitLabel}
+                            </Button>
+                            {(confirmAction) ?
+                                <ConfirmDialog
+                                    onSubmit={props.handleSubmit(data => onSubmit(data, props))}
+                                    open={props.dialogIsOpen}
+                                    closeDialog={props.closeDialog}
+                                /> :
+                                null
+                            }
+                        </span>
+                    </JssProvider>
                 )
             },
             renderCancelButton: (style = {}) => {
                 return (
-                    <Button
-                        onClick={onCancel}
-                        variant="raised"
-                        color="secondary"
-                        {...cancelButtonProps}
-                        style={style}
-                    >
-                        {cancelLabel}
-                    </Button>
+                    <JssProvider generateClassName={generateClassName} >
+                        <Button
+                            onClick={onCancel}
+                            variant="raised"
+                            color="secondary"
+                            {...cancelButtonProps}
+                            style={style}
+                        >
+                            {cancelLabel}
+                        </Button>
+                    </JssProvider>
                 )
             },
         }

@@ -8,6 +8,8 @@ import IconButton from 'material-ui/IconButton';
 import Button from 'material-ui/Button';
 import Tooltip from 'material-ui/Tooltip';
 import {EDIT, VIEW} from './modeConstants'
+import JssProvider from 'react-jss/lib/JssProvider';
+import generateClassName from './helpers/generateClassName';
 
 const _pushHistory = (history, route, params) => {
     let path = (params) ? `${route}/${params}` : route;
@@ -47,33 +49,39 @@ export default (editRoute, viewRoute, options = {}) => compose(
             return {
                 renderClearButton: () => {
                     return (props.mode !== VIEW) ? (
-                        <Tooltip title="Clear">
-                            <IconButton onClick={() => {
-                                props.reset();
+                        <JssProvider generateClassName={generateClassName} >
+                            <Tooltip title="Clear">
+                                <IconButton onClick={() => {
+                                    props.reset();
 
-                                if (options.onClearCallback) options.onClearCallback(props)
-                            }}>
-                                <ClearIcon style={{width: 24, height: 24}} />
-                            </IconButton>
-                        </Tooltip>
+                                    if (options.onClearCallback) options.onClearCallback(props)
+                                }}>
+                                    <ClearIcon style={{width: 24, height: 24}} />
+                                </IconButton>
+                            </Tooltip>
+                        </JssProvider>
                     ) : null;
                 },
                 renderEditButton: () => {
                     return (id && props.mode === VIEW && showEdit) ? (
-                        <Tooltip title="Edit">
-                            <Button variant="raised" onClick={onEdit}>
-                                <EditIcon style={{width: 24, height: 24}} />
-                            </Button>
-                        </Tooltip>
+                        <JssProvider generateClassName={generateClassName}>
+                            <Tooltip title="Edit">
+                                <Button variant="raised" onClick={onEdit}>
+                                    <EditIcon style={{width: 24, height: 24}} />
+                                </Button>
+                            </Tooltip>
+                        </JssProvider>
                     ) : null
                 },
                 renderViewButton: () => {
                     return (id && props.mode === EDIT && showView) ? (
-                        <Button variant="raised" onClick={onView}>
-                            <Tooltip title="View">
-                                <ViewIcon style={{width: 24, height: 24}} />
-                            </Tooltip>
-                        </Button>
+                        <JssProvider generateClassName={generateClassName}>
+                            <Button variant="raised" onClick={onView}>
+                                <Tooltip title="View">
+                                    <ViewIcon style={{width: 24, height: 24}} />
+                                </Tooltip>
+                            </Button>
+                        </JssProvider>
                     ) : null
                 }
             }
