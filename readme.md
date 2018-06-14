@@ -342,6 +342,7 @@ withActionsButtons(
   editRoute: String | (ownerProps: Object) => {},
   viewRoute: String | (ownerProps: Object) => {},
   options: Object {
+      shouldShowClear: (ownerProps: Object) => Boolean,
       onClearCallback: (ownerProps: Object) => {},
       shouldShowEdit: (ownerProps: Object) => Boolean,
       onEditCallback: (editRoute: String, ownerProps: Object) => {},
@@ -354,6 +355,7 @@ Recibe 3 parámetros:
 - editRoute (string): Ruta a la que se navega con el botón de Edit Mode. 
 - viewRoute (string): Ruta a la que se navega con el botón de View Mode.
 - options (object): 
+    - shouldShowClear: Callback para determinar si debe mostrarse el boton clear. Por defecto esta visible.  La función se llama con las props del component envuelto como único parámetro.
     - onClearCallback: Callback que se ejecuta luego de limpiar el formulario. Útil en los casos en los que haya que eliminar datos del reducer de manera manual. La función se llama con las props del component envuelto como único parámetro. 
     - shouldShowEdit: Callback para determinar si debe mostrarse el boton de edit mode. Por defecto los botones se ocultan basados en la ruta.  La función se llama con las props del component envuelto como único parámetro.
     - onEditCallback: Callback que se ejecuta en el click del botón de edit mode. Por defecto se intenta navegar utilizando la prop history del componente. La función se llama con la ruta de edit y las props del component envuelto como parámetros.

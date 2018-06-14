@@ -22,6 +22,7 @@ const _pushHistory = (history, route, params) => {
  * @param {string | function} editRoute
  * @param {string | function} viewRoute
  * @param {object} options
+ * @param {function} options.shouldShowClear
  * @param {function} options.onClearCallback
  * @param {function} options.shouldShowEdit
  * @param {function} options.onEditCallback
@@ -37,6 +38,7 @@ export default (editRoute, viewRoute, options = {}) => compose(
         const id = props.initialValues && props.initialValues.id || props.initialValues._id;
         const showEdit = (options.shouldShowEdit) ? options.shouldShowEdit(props) : true;
         const showView = (options.shouldShowView) ? options.shouldShowView(props) : true;
+        const showClear = (options.shouldShowClear) ? options.shouldShowClear(props) : true;
         const onEdit = (options.onEditCallback) ?
             options.onEditCallback(editPathRoute, props) : (props.history) ?
                 () => _pushHistory(props.history, editPathRoute, id) :
@@ -48,7 +50,7 @@ export default (editRoute, viewRoute, options = {}) => compose(
 
             return {
                 renderClearButton: () => {
-                    return (props.mode !== VIEW) ? (
+                    return (props.mode !== VIEW && showClear) ? (
                         <JssProvider generateClassName={generateClassName} >
                             <Tooltip title="Clear">
                                 <IconButton onClick={() => {
