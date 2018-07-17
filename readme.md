@@ -53,13 +53,14 @@ export default compose(
         },
         submitAndCancelButtonsOptions: {
             onSubmitOptions: {
-                label: 'String',
+                label: 'String' | (mode, props) => {},
                 confirmAction: true,
+                confirmActionComponent: (props) => {},
                 getButtonProps: (props) => {},
                 buttonProps: {},
             },
             onCancelOptions: {
-                label: 'String',
+                label: 'String' | (mode, props) => {},
                 onCancel: (props) => {},
                 getButtonProps: (props) => {},
                 buttonProps: {},                
@@ -78,7 +79,10 @@ export default compose(
                 onEditCallback: (editRoute, props) => {},
                 shouldShowView: (props) => {},
                 onViewCallback: (viewRoute, props) => {},
-            }
+                clearTooltip: 'String',
+                editTooltip: 'String',
+                viewTooltip: 'String',
+            },
         },
         without: [] //Lista de hocs que no se desean incluir
     }),
@@ -260,24 +264,25 @@ Genera los botones de acciones para el formulario.
 ```javascript 1.6
 withSubmitAndCancelButtons(
   onSubmitCallback: (formValues: Object, ownerProps: Object) => {},         
-  onSubmitOptions: Object{label: String, confirmAction: boolean, buttonProps: Object, getButtonProps: (ownerProps: Object)},
-  onCancelOptions: Object{label: String, onCancel: () => {}, buttonProps: Object, getButtonProps: (ownerProps: Object)},
+  onSubmitOptions: Object{label: String | (mode: String, props: Object) => String, confirmAction: boolean, buttonProps: Object, getButtonProps: (ownerProps: Object), confirmActionComponent: (props: Object) => ReactComponent},
+  onCancelOptions: Object{label: String | (mode: String, props: Object) => String, onCancel: () => {}, buttonProps: Object, getButtonProps: (ownerProps: Object)},
 ): HigherOrderComponent
 ```
 
 Recibe 3 parámetros:
 - onSubmit (function): Función a ejecutar en el submit (sea edit o add). La función será llamada con los datos del formulario y las props del componente envuelto: function(data, props)
 - onSubmitOptions (object): 
-    - label (string): El label a ser usado en el botón. Si no se provee se utiliza una función que genera el label de manera automática según el ***mode*** del form.     
+    - label (string|function): El label a ser usado en el botón. Si no se provee se utiliza una función que genera el label de manera automática según el ***mode*** del form.     
     - confirmAction (boolean): Determina si se dispara o no el dialog de confimación. Por defecto se activará siempre que el mode sea EDIT.
     - buttonProps (object): Props que será pasadas al botón de submit. 
     - getButtonProps (function): Permite utilizar un callback para generar las props para el botón. La función es llamada con las props del component envuelto como único parámetro. Si se declara esta opción buttonProps no tiene efecto. 
+    - confirmActionComponent (function|node): Componente que se renderiza si confirmAction se encuentra en true. Usualmente un modal. Recibe todas las props del componente envuelto junto con las props necesarias para controlar el estado de apertura/cierre. 
 
 - onCancelOptions (object):
-    - label (string): El label a ser usado en el botón. Si no se provee se utiliza 'Cancel' por defecto.  
+    - label (string|function): El label a ser usado en el botón. Si no se provee se utiliza 'Cancel' por defecto.  
     - onCancel (function): Función a ejecutar en el cancel. De no ser declarada Navigation.pop se utiliza por defecto.    
     - buttonProps (object): Props que será pasadas al botón de cancel. 
-    - getButtonProps (function): Permite utilizar un callback para generar las props para el botón. La función es llamada con las props del component envuelto como único parámetro. Si se declara esta opción buttonProps no tiene efecto.
+    - getButtonProps (function): Permite utilizar un callback para generar las props para el botón. La función es llamada con las props del componente envuelto como único parámetro. Si se declara esta opción buttonProps no tiene efecto.
 
 Inyecta dos props al componente:
 
@@ -348,6 +353,9 @@ withActionsButtons(
       onEditCallback: (editRoute: String, ownerProps: Object) => {},
       shouldShowView: (ownerProps: Object) => Boolean,
       onViewCallback: (editRoute: String, ownerProps: Object) => {},
+      clearTooltip: String,
+      editTooltip: String,
+      viewTooltip: String,
   }
 ): HigherOrderComponent
 ```
@@ -361,6 +369,9 @@ Recibe 3 parámetros:
     - onEditCallback: Callback que se ejecuta en el click del botón de edit mode. Por defecto se intenta navegar utilizando la prop history del componente. La función se llama con la ruta de edit y las props del component envuelto como parámetros.
     - shouldShowView: Callback para determinar si debe mostrarse el boton de view mode. Por defecto los botones se ocultan basados en la ruta.  La función se llama con las props del component envuelto como único parámetro.
     - onViewCallback: Callback que se ejecuta en el click del botón de view mode. Por defecto se intenta navegar utilizando la prop history del componente. La función se llama con la ruta de view y las props del component envuelto como parámetros.
+    - clearTooltip: (string) Texto para el tooltip del boton clear.
+    - editTooltip: (string) Texto para el tooltip del boton edit.
+    - viewTooltip: (string) Texto para el tooltip del boton view.
 
 El componente se retorna con 3 props nuevas:
 - renderClearButton (function): Genera el botón para resetear el formulario a su estado inicial.   

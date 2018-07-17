@@ -2,11 +2,23 @@
 
 var path = require('path');
 module.exports = {
-    entry: './src/index.js',
+    entry: {
+        modes: './src/modeConstants.js',
+        withActionsButtons: './src/withActionsButtons.js',
+        withFormEnhancer: './src/withFormEnhancer.js',
+        withFormTitle: './src/withFormTitle.js',
+        withGetFieldProps: './src/withGetFieldProps.js',
+        withReduxForm: './src/withReduxForm.js',
+        withSubmitAndCancelButtons: './src/withSubmitAndCancelButtons.js',
+        //components
+        FormHeader: './src/components/form-header.js',
+        FormFooter: './src/components/form-footer.js',
+    },
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'index.js',
-        libraryTarget: 'commonjs2' // THIS IS THE MOST IMPORTANT LINE! :mindblow: I wasted more than 2 days until realize this was the line most important in all this guide.
+        filename: '[name].js',
+        library: 'forms',
+        libraryTarget: 'commonjs2'
     },
     module: {
         rules: [

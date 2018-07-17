@@ -28,6 +28,9 @@ const _pushHistory = (history, route, params) => {
  * @param {function} options.onEditCallback
  * @param {function} options.shouldShowView
  * @param {function} options.onViewCallback
+ * @param {string} options.clearTooltip
+ * @param {string} options.editTooltip
+ * @param {string} options.viewTooltip
  */
 export default (editRoute, viewRoute, options = {}) => compose(
     withProps(props => {
@@ -48,11 +51,16 @@ export default (editRoute, viewRoute, options = {}) => compose(
                 () => _pushHistory(props.history, viewPathRoute, id) :
                 _navigationUnavailable;
 
+        //tooltips
+        const clearTooltip = (options.clearTooltip) ? options.clearTooltip : 'Clear';
+        const editTooltip = (options.editTooltip) ? options.editTooltip : 'Edit';
+        const viewTooltip = (options.viewTooltip) ? options.viewTooltip : 'View';
+
             return {
                 renderClearButton: () => {
                     return (props.mode !== VIEW && showClear) ? (
                         <JssProvider generateClassName={generateClassName} >
-                            <Tooltip title="Clear">
+                            <Tooltip title={clearTooltip}>
                                 <IconButton onClick={() => {
                                     props.reset();
 
@@ -67,7 +75,7 @@ export default (editRoute, viewRoute, options = {}) => compose(
                 renderEditButton: () => {
                     return (id && props.mode === VIEW && showEdit) ? (
                         <JssProvider generateClassName={generateClassName}>
-                            <Tooltip title="Edit">
+                            <Tooltip title={editTooltip}>
                                 <Button variant="raised" onClick={onEdit}>
                                     <EditIcon style={{width: 24, height: 24}} />
                                 </Button>
@@ -79,7 +87,7 @@ export default (editRoute, viewRoute, options = {}) => compose(
                     return (id && props.mode === EDIT && showView) ? (
                         <JssProvider generateClassName={generateClassName}>
                             <Button variant="raised" onClick={onView}>
-                                <Tooltip title="View">
+                                <Tooltip title={viewTooltip}>
                                     <ViewIcon style={{width: 24, height: 24}} />
                                 </Tooltip>
                             </Button>

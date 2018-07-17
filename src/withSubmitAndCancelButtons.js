@@ -25,11 +25,11 @@ const _getButtonLabel = (mode) => {
     return labelByMode[_upperCase(mode)] || 'Submit'
 };
 
-const ConfirmDialog = (props) => {
+const ConfirmDialog = ({open, closeDialog, onSubmit}) => {
    return (
        <Dialog
-           open={props.open}
-           onClose={props.closeDialog}
+           open={open}
+           onClose={closeDialog}
            aria-labelledby="alert-dialog-title"
            aria-describedby="alert-dialog-description"
        >
@@ -40,10 +40,10 @@ const ConfirmDialog = (props) => {
                </DialogContentText>
            </DialogContent>
            <DialogActions>
-               <Button onClick={props.closeDialog} color="secondary">
+               <Button onClick={closeDialog} color="secondary">
                    Cancel
                </Button>
-               <Button onClick={props.onSubmit} color="primary" autoFocus>
+               <Button onClick={onSubmit} color="primary" autoFocus>
                    Confirm
                </Button>
            </DialogActions>
@@ -55,13 +55,14 @@ const ConfirmDialog = (props) => {
  *
  * @param {function} onSubmitCallback
  * @param onSubmitOptions
- * @param {string} onSubmitOptions.label
+ * @param {*} onSubmitOptions.label
  * @param {function} onSubmitOptions.onSubmit
  * @param {boolean} onSubmitOptions.confirmAction
+ * @param {function} onSubmitOptions.confirmActionComponent
  * @param {function} onSubmitOptions.getButtonProps
  * @param {object} onSubmitOptions.buttonProps
  * @param {object} onCancelOptions
- * @param {string} onCancelOptions.label
+ * @param {*} onCancelOptions.label
  * @param {function} onCancelOptions.onCancel
  * @param {function} onCancelOptions.getButtonProps
  * @param {object} onCancelOptions.buttonProps
@@ -74,14 +75,18 @@ export default (onSubmitCallback, onSubmitOptions = {}, onCancelOptions = {}) =>
         closeDialog: () => () => ({dialogIsOpen: false})
     }),
     withProps(props => {
+        const _submitLabel = (typeof onSubmitOptions.label === 'function') ? onSubmitOptions.label(props.mode, props) : onSubmitOptions.label;
+        const _cancelLabel = (typeof onCancelOptions.label === 'function') ? onCancelOptions.label(props.mode, props) : onCancelOptions.label;
+
         //handle onSubmitOptions
         const confirmAction = onSubmitOptions.confirmAction || (_upperCase(props.mode) === EDIT);
-        const submitLabel = onSubmitOptions.label || _getButtonLabel(props.mode);
+        const submitLabel = _submitLabel || _getButtonLabel(props.mode);
         const onSubmit = onSubmitCallback || function(){console.warn(">> SUBMIT FUNCTION NOT PROVIDED <<")};
         const submitButtonProps = (onSubmitOptions.getButtonProps) ? onSubmitOptions.getButtonProps(props) : onSubmitOptions.buttonProps;
+        const confirmAcionComponent = (onSubmitOptions.confirmActionComponent) ? onSubmitOptions.confirmActionComponent : ConfirmDialog;
 
         //handle onCancelOptions
-        const cancelLabel = onCancelOptions.label || 'Cancel';
+        const cancelLabel = _cancelLabel || 'Cancel';
         const onCancel = onCancelOptions.onCancel || Navigator.pop;
         const cancelButtonProps = (onCancelOptions.getButtonProps) ? onCancelOptions.getButtonProps(props) : onCancelOptions.buttonProps;
 
@@ -105,11 +110,12 @@ export default (onSubmitCallback, onSubmitOptions = {}, onCancelOptions = {}) =>
                                 {submitLabel}
                             </Button>
                             {(confirmAction) ?
-                                <ConfirmDialog
-                                    onSubmit={props.handleSubmit(data => onSubmit(data, props))}
-                                    open={props.dialogIsOpen}
-                                    closeDialog={props.closeDialog}
-                                /> :
+                                confirmAcionComponent({
+                                    onSubmit: props.handleSubmit(data => onSubmit(data, props)),
+                                    open: props.dialogIsOpen,
+                                    close: props.closeDialog,
+                                    ...props,
+                                }) :
                                 null
                             }
                         </span>
