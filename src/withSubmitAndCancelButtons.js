@@ -71,7 +71,7 @@ export default (onSubmitCallback, onSubmitOptions = {}, onCancelOptions = {}) =>
     withStateHandlers({
         dialogIsOpen: false,
     }, {
-        openDialog: () => () => ({dialogIsOpen: true}),
+        openDialog: (state, props) => () => ({dialogIsOpen: !props.invalid}),
         closeDialog: () => () => ({dialogIsOpen: false})
     }),
     withProps(props => {
