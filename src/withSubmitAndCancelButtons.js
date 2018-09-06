@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Button from 'material-ui/Button';
 import {compose, withProps, withStateHandlers, setPropTypes, setDisplayName} from 'recompose';
 import Navigator from '@yuniku/navigator';
-import {ADD, EDIT, DELETE} from './modeConstants';
+import {ADD, EDIT, DELETE, VIEW} from './modeConstants';
 import _upperCase from 'lodash/upperCase';
 import Dialog, {
     DialogActions,
@@ -22,7 +22,7 @@ const labelByMode = {
 };
 
 const _getButtonLabel = (mode) => {
-    return labelByMode[_upperCase(mode)] || 'Submit'
+    return labelByMode[mode] || 'Submit'
 };
 
 const ConfirmDialog = ({open, closeDialog, onSubmit}) => {
@@ -75,15 +75,29 @@ export default (onSubmitCallback, onSubmitOptions = {}, onCancelOptions = {}) =>
         closeDialog: () => () => ({dialogIsOpen: false})
     }),
     withProps(props => {
+        const formMode = _upperCase(props.mode);
         const _submitLabel = (typeof onSubmitOptions.label === 'function') ? onSubmitOptions.label(props.mode, props) : onSubmitOptions.label;
         const _cancelLabel = (typeof onCancelOptions.label === 'function') ? onCancelOptions.label(props.mode, props) : onCancelOptions.label;
 
         //handle onSubmitOptions
-        const confirmAction = onSubmitOptions.confirmAction || (_upperCase(props.mode) === EDIT);
-        const submitLabel = _submitLabel || _getButtonLabel(props.mode);
+        const confirmAction = onSubmitOptions.confirmAction || (formMode === EDIT);
+        const submitLabel = _submitLabel || _getButtonLabel(formMode);
         const onSubmit = onSubmitCallback || function(){console.warn(">> SUBMIT FUNCTION NOT PROVIDED <<")};
         const submitButtonProps = (onSubmitOptions.getButtonProps) ? onSubmitOptions.getButtonProps(props) : onSubmitOptions.buttonProps;
-        const confirmAcionComponent = (onSubmitOptions.confirmActionComponent) ? onSubmitOptions.confirmActionComponent : ConfirmDialog;
+        const confirmActionComponent = (onSubmitOptions.confirmActionComponent) ? onSubmitOptions.confirmActionComponent : ConfirmDialog;
+        const submitForm = props.handleSubmit(data => onSubmit(data, props));
+        const submitAction = () => {
+            //touch fields with errors to show error message
+            if (props.fieldsWithErrors.length) {
+                props.fieldsWithErrors.map(field => props.touch(field))
+            } else {
+                if (confirmAction) {
+                    props.openDialog()
+                } else {
+                    submitForm();
+                }
+            }
+        };
 
         //handle onCancelOptions
         const cancelLabel = _cancelLabel || 'Cancel';
@@ -100,18 +114,21 @@ export default (onSubmitCallback, onSubmitOptions = {}, onCancelOptions = {}) =>
                     <JssProvider generateClassName={generateClassName} >
                         <span>
                             <Button
-                                onClick={ (confirmAction) ? props.openDialog : props.handleSubmit(data => onSubmit(data, props))}
+                                onClick={submitAction}
                                 variant="raised"
                                 color="primary"
-                                disabled={props.pristine || props.submitting}
+                                disabled={(formMode === EDIT && props.pristine) || formMode === VIEW || props.submitting}
                                 style={style}
                                 {...submitButtonProps}
                             >
                                 {submitLabel}
                             </Button>
                             {(confirmAction) ?
-                                confirmAcionComponent({
-                                    onSubmit: props.handleSubmit(data => onSubmit(data, props)),
+                                confirmActionComponent({
+                                    onSubmit: props.handleSubmit(data => {
+                                        onSubmit(data, props);
+                                        props.closeDialog();
+                                    }),
                                     open: props.dialogIsOpen,
                                     close: props.closeDialog,
                                     ...props,

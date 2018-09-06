@@ -1,5 +1,5 @@
 import {compose, withProps, setDisplayName} from 'recompose';
-import {reduxForm} from 'redux-form';
+import {reduxForm, getFormSyncErrors} from 'redux-form';
 import {connect} from 'react-redux';
 import _get from 'lodash/get';
 import _isEmpty from 'lodash/isEmpty';
@@ -14,7 +14,8 @@ const mapStateToProps = (state, props) => {
 
     return {
         id: id,
-        formInitialValues: initialValues
+        formInitialValues: initialValues,
+        fieldsWithErrors: Object.keys(getFormSyncErrors(props.options.formName)(state)),
     }
 };
 
