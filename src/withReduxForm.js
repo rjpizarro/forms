@@ -7,6 +7,21 @@ import omitProps from './helpers/omitProps';
 
 const _getDataByIDFromReducer = (state, path, id) => (state[path] && state[path].data) ? state[path].data[id] : {};
 
+const _getDeepKeys = (obj) => {
+    let keys = [];
+
+    for(let key in obj) {
+        keys.push(key);
+
+        if(typeof obj[key] === "object") {
+            const subkeys = _getDeepKeys(obj[key]);
+
+            keys = keys.concat(subkeys.map((subkey) => key + "." + subkey));
+        }
+    }
+    return keys;
+};
+
 const mapStateToProps = (state, props) => {
     const reducerPath = props.options.reducerPath || props.options.formName;
     const id = _get(props, 'match.params.id', null);
@@ -15,7 +30,7 @@ const mapStateToProps = (state, props) => {
     return {
         id: id,
         formInitialValues: initialValues,
-        fieldsWithErrors: Object.keys(getFormSyncErrors(props.options.formName)(state)),
+        fieldsWithErrors: _getDeepKeys(getFormSyncErrors(props.options.formName)(state)),
     }
 };
 
