@@ -50,6 +50,9 @@ export default compose(
         formTitleOptions: {
             title: 'String',
             customFormTitle: (props) => {},
+            backButtonOptions: {
+                onBackButtonClick: (props) => {},
+            }
         },
         submitAndCancelButtonsOptions: {
             onSubmitOptions: {
@@ -226,12 +229,16 @@ Genera el título del formulario.
 withFormTitle(
   title: String,
   customFormTitle: (ownerProps: Object) => String,
+  backButtonOptions: Object { onBackButtonClick: (ownerProps: Object) => * }
 ): HigherOrderComponent
 ```
 
-Recibe 2 parámetros:
+Recibe 3 parámetros:
 - title (string): Texto para el título. El resultado final contendrá el modo delante del texto. Ej: 'Add User';
 - customFormTitle (function): Función para generar un título customizado. La función será llamada con las props del componente envuelto como único parámetro.
+- backButtonOptions (objeto); Objeto que permite configurar el comportamiento del back button. 
+    - Opciones disponibles: 
+        - ***onBackButtonClick***: (function). Callback accionado en el backButton. La función es ejecutada con las props del componente.
 
 Inyecta dos props al componente:
 

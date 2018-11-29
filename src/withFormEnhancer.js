@@ -19,6 +19,8 @@ const emptyHOC = (WrappedComponent) => WrappedComponent;
  * @param options.formTitleOptions
  * @param {string} options.formTitleOptions.title
  * @param {*} options.formTitleOptions.customFormTitle
+ * @param {object} options.formTitleOptions.backButtonOptions
+ * @param {function | string} options.formTitleOptions.backButtonOptions.onBackButtonClick
  * @param options.submitAndCancelButtonsOptions
  * @param {object} options.submitAndCancelButtonsOptions.onSubmitOptions
  * @param {object} options.submitAndCancelButtonsOptions.onCancelOptions
@@ -41,6 +43,7 @@ export default (formName, onSubmit = () => {console.error('Submit function not p
     } = options;
     const reduxFormOptions = options.reduxFormOptions || {};
     const formTitleOptions = options.formTitleOptions || {};
+    const backButtonOptions = formTitleOptions.backButtonOptions || {};
     const formTitle = formTitleOptions.title || formName;
     const submitAndCancelOptions = options.submitAndCancelButtonsOptions || {};
     const getFieldPropsOptions = options.getFieldPropsOptions || {};
@@ -48,7 +51,7 @@ export default (formName, onSubmit = () => {console.error('Submit function not p
 
     return compose(
         (shouldRemoveHOC('reduxForm', without)) ? emptyHOC : withReduxForm(formName, reduxFormOptions),
-        (shouldRemoveHOC('title', without)) ? emptyHOC : withFormTitle(formTitle, formTitleOptions.customFormTitle),
+        (shouldRemoveHOC('title', without)) ? emptyHOC : withFormTitle(formTitle, formTitleOptions.customFormTitle, backButtonOptions),
         (shouldRemoveHOC('submitAndCancelButtons', without)) ? emptyHOC : withSubmitAndCancelButtons(onSubmit, submitAndCancelOptions.onSubmitOptions, submitAndCancelOptions.onCancelOptions),
         (shouldRemoveHOC('getFieldProps', without)) ? emptyHOC : withGetFieldProps(getFieldPropsOptions.fieldProps, getFieldPropsOptions.customGetFieldProps),
         (shouldRemoveHOC('actionsButtons', without)) ? emptyHOC : withActionsButtons(actionsButtonsOptions.editRoute, actionsButtonsOptions.viewRoute, actionsButtonsOptions.options),
